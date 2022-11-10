@@ -1,0 +1,10 @@
+System.Exception: HttpPost failed in HttpService
+ ---> System.InvalidOperationException: An invalid request URI was provided. Either the request URI must be an absolute URI or BaseAddress must be set.
+   at System.Net.Http.HttpClient.PrepareRequestMessage(HttpRequestMessage request)
+   at System.Net.Http.HttpClient.CheckRequestBeforeSend(HttpRequestMessage request)
+   at System.Net.Http.HttpClient.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.SendAsync(HttpRequestMessage request)
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 63
+   --- End of inner exception stack trace ---
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 69
+   at Telegram.Bot.SCL.Auth.TicketAPI.Insert(TicketEntity ticketEntity) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Auth\Ticket.cs:line 38

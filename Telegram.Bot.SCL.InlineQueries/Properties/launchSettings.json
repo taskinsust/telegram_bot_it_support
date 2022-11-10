@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Telegram.Bot.Examples.InlineQueries": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TOKEN": "5280809563:AAFK7jETTJtRM4PueZDfgGFYJjgTDCzwi3Q"
+      }
+    }
+  }
+}

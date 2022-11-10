@@ -1,0 +1,10 @@
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\bin\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.deps.json
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\bin\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.dll
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\bin\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.pdb
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.csproj.AssemblyReference.cache
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.GeneratedMSBuildEditorConfig.editorconfig
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.AssemblyInfoInputs.cache
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.AssemblyInfo.cs
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.csproj.CoreCompileInputs.cache
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.dll
+G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Authentication\obj\Debug\netstandard2.0\Telegram.Bot.SCL.Authentication.pdb
