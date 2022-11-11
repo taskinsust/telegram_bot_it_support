@@ -1,4 +1,3 @@
-
 using Newtonsoft.Json;
 using System.Threading;
 using Telegram.Bot.Exceptions;
@@ -16,6 +15,7 @@ namespace Telegram.Bot.Services;
 
 public class UpdateHandler : IUpdateHandler
 {
+    #region default implementation
     private readonly ITelegramBotClient _botClient;
     private readonly ITelegramAuthentication _telegramAuthentication;
     private readonly ILogger<UpdateHandler> _logger;
@@ -31,12 +31,6 @@ public class UpdateHandler : IUpdateHandler
     {
         var handler = update switch
         {
-            // UpdateType.Unknown:
-            // UpdateType.ChannelPost:
-            // UpdateType.EditedChannelPost:
-            // UpdateType.ShippingQuery:
-            // UpdateType.PreCheckoutQuery:
-            // UpdateType.Poll:
             { Message: { } message } => BotOnMessageReceived(message, cancellationToken),
             { EditedMessage: { } message } => BotOnMessageReceived(message, cancellationToken),
             { CallbackQuery: { } callbackQuery } => BotOnCallbackQueryReceived(callbackQuery, cancellationToken),
@@ -48,14 +42,319 @@ public class UpdateHandler : IUpdateHandler
         await handler;
     }
 
+    #endregion
+
+    #region private handler area
+    private async Task<string> UserRegPlusCredentialCheck(ITelegramBotClient botClient, Message message)
+    {
+        if (message.Contact is not null)
+        {
+            //update contact information based on telegram id
+            var updateResult = _telegramAuthentication.UpdateUserCredential(message.From.FirstName, message.From.LastName, message.From.Username, (long)message.Contact.UserId, message.Contact.PhoneNumber);
+            var responseResult = JsonConvert.DeserializeObject<ResponseResult>(updateResult);
+            if (responseResult.Message == ErrorMessages.WAITING_FOR_EMAIL_REQUEST)
+                await RequestEmailRequest(_botClient, message);
+            return "not_pull";
+        }
+
+        var result = _telegramAuthentication.CheckUserCredential(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id);
+        var response = JsonConvert.DeserializeObject<ResponseResult>(result);
+        if (!String.IsNullOrEmpty(message.Text) &&
+            (message.Text.ToLower().Contains("@summitcommunications.net") ||
+            message.Text.ToLower().Contains("@rsl-service.com") ||
+            message.Text.ToLower().Contains("@summit-towers.net") ||
+            message.Text.ToLower().Contains("@summit-centre.com")))
+        {
+            //Update User Profile Email Address
+            _telegramAuthentication.UpdateUserProfileEmail(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id, message.Text);
+
+            //Update Identity User Email
+            _telegramAuthentication.UpdateEmail(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id, message.Text);
+            result = _telegramAuthentication.CheckUserCredential(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id);
+            response = JsonConvert.DeserializeObject<ResponseResult>(result);
+        }
+        if (!response.IsSuccess)
+        {
+            if (response.Message.Equals(ErrorMessages.FIRST_TIME_USER_REQUEST))
+            {
+                await RequestContact(_botClient, message);
+                return "not_pull";
+            }
+            else if (response.Message.Equals(ErrorMessages.WAITING_FOR_EMAIL_REQUEST))
+            {
+                await RequestEmailRequest(_botClient, message);
+                return "not_pull";
+            }
+            //await SendMessage(_botClient, message, response.Message);
+        }
+        return "pull";
+    }
+    private static async Task InsertTicket(ITelegramBotClient _botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        //Save this response to database
+        Task<HttpResponseMessage> responseMessage = new TicketAPI().Insert(new TicketEntity()
+        {
+            Title = callbackQuery.Data,
+            TelegramUserId = callbackQuery.From.Id.ToString()
+        });
+
+        await _botClient.AnswerCallbackQueryAsync(
+                callbackQueryId: callbackQuery.Id,
+                text: "Thank you for your ticket regarding " + callbackQuery.Data + ". A support IT engineer will contact you very soon",
+                showAlert: true
+                );
+    }
+    static async Task RequestEmailRequest(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var forceReplyMarkup = new ForceReplyMarkup() { Selective = true };
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "please type your official/SComm email address. example: yourname@summitcommunications.net.",
+                replyMarkup: forceReplyMarkup
+            );
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+    static async Task RequestContact(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var RequestReplyKeyboard = new ReplyKeyboardMarkup(new[]
+           {
+                      KeyboardButton.WithRequestContact("Contact")
+                });
+
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "Please do not type anything in this phase, just tab contact button to share your phone number",
+                replyMarkup: RequestReplyKeyboard
+            );
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+    private static async Task EmailSupport(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+           {
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Outlook Configure/reconfigure","Outlook Configure/reconfigure"),
+                                                     },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Mail Archive Issue","Mail Archive Issue"),
+                                                      },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Outlook Operational Problem","Outlook Operational Problem"),
+                             },
+
+                        });
+
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "please choose your email support category",
+                replyMarkup: inlineKeyboard
+            ); ;
+        }
+        catch { }
+    }
+    private static async Task NetworkSupport(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+           {
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("LAN/WiFi Connection Problem","LAN/WiFi Connection Problem"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("No Internet/ Slow Internet","No Internet/ Slow Internet"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("AC - Access permission add/remove","AC - Access permission add/remove"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("CC Camera issue","CC Camera issue"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("VPN Access/Reset/troubleshoot","VPN Access/Reset/troubleshoot"),
+                             }
+                        });
+
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "please choose your network support category",
+                replyMarkup: inlineKeyboard
+            ); ;
+        }
+        catch { }
+    }
+    private static async Task HardwareSupport(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+           {
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Hardware Problem/Troubleshoot","Hardware Problem/Troubleshoot"),
+                                                     },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Toner/Cartridge Request","Toner/Cartridge Request"),
+                                                      },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Damage/Broken/Lost Issue","Damage/Broken/Lost Issue"),
+                             },
+                              new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Support laptop Arrange","Support laptop Arrange"),
+                             },
+                        });
+
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: "please choose your hardware support category",
+                replyMarkup: inlineKeyboard
+            ); ;
+        }
+        catch { }
+    }
+    private static async Task Support(ITelegramBotClient _botClient, Message message)
+    {
+        try
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+           {
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("MS office install/troubleshoot","MS office install/troubleshoot"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Regular Operational software install/Troubleshoot","Regular Operational software install/Troubleshoot"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Printer/Scanner/IP install/Troubleshoot","Printer/Scanner/IP install/Troubleshoot"),
+                             },
+                            new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Any Kind of IT System Login/privilege Problem","Any Kind of IT System Login/privilege Problem"),
+                             },
+                             new []
+                             {
+                                 InlineKeyboardButton.WithCallbackData("Common Drive Connection/troubleshoot","Common Drive Connection/troubleshoot"),
+                             },
+                    });
+
+            await _botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: "please choose your support category",
+            replyMarkup: inlineKeyboard
+            );
+        }
+        catch { }
+    }
+    private static async Task<Message> SupportList(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+                      chatId: message.Chat.Id,
+                      chatAction: ChatAction.Typing,
+                      cancellationToken: cancellationToken);
+
+        // Simulate longer running task
+        await Task.Delay(500, cancellationToken);
+
+        InlineKeyboardMarkup inlineKeyboard = new(
+            new[]
+            {
+                    // first row
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("Email", "/Email"),
+                        InlineKeyboardButton.WithCallbackData("Network", "/Network"),
+                    },
+                    // second row
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("Hardware", "/Hardware"),
+                        InlineKeyboardButton.WithCallbackData("Support", "/Support"),
+                    },
+            });
+
+        return await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: "Which kinds of support are you seeking?",
+            replyMarkup: inlineKeyboard,
+            cancellationToken: cancellationToken);
+    }
+
+    private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
+        return Task.CompletedTask;
+    }
+
+    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    {
+        var ErrorMessage = exception switch
+        {
+            ApiRequestException apiRequestException => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+            _ => exception.ToString()
+        };
+
+        _logger.LogInformation("HandleError: {ErrorMessage}", ErrorMessage);
+
+        // Cooldown in case of network connection error
+        if (exception is RequestException)
+            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+    }
+
+    private static async Task SendMessage(ITelegramBotClient _botClient, Message message, string response)
+    {
+        try
+        {
+            await _botClient.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: response,
+                    replyMarkup: new ReplyKeyboardRemove()
+                );
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
+    #endregion
+
+    #region event subscriber
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
         if (message.Text is not { } messageText)
             return;
 
-        await UserRegPlusCredentialCheck(_botClient, message);
-
+        var res = await UserRegPlusCredentialCheck(_botClient, message);
+        if (res == "not_pull")
+            return;
         var action = messageText.Split(' ')[0] switch
         {
             //"/inline_keyboard" => SendInlineKeyboard(_botClient, message, cancellationToken),
@@ -214,52 +513,9 @@ public class UpdateHandler : IUpdateHandler
         }
     }
 
-    private async Task UserRegPlusCredentialCheck(ITelegramBotClient botClient, Message message)
-    {
-        if (message.Contact is not null)
-        {
-            //update contact information based on telegram id
-            var updateResult = _telegramAuthentication.UpdateUserCredential(message.From.FirstName, message.From.LastName, message.From.Username, (long)message.Contact.UserId, message.Contact.PhoneNumber);
-            var responseResult = JsonConvert.DeserializeObject<ResponseResult>(updateResult);
-            if (responseResult.Message == ErrorMessages.WAITING_FOR_EMAIL_REQUEST)
-                await RequestEmailRequest(_botClient, message);
-            return;
-        }
+    #endregion
 
-        var result = _telegramAuthentication.CheckUserCredential(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id);
-        var response = JsonConvert.DeserializeObject<ResponseResult>(result);
-        if (!String.IsNullOrEmpty(message.Text) &&
-            (message.Text.ToLower().Contains("@summitcommunications.net") ||
-            message.Text.ToLower().Contains("@rsl-service.com") ||
-            message.Text.ToLower().Contains("@summit-towers.net") ||
-            message.Text.ToLower().Contains("@summit-centre.com")))
-        {
-            //Update User Profile Email Address
-            _telegramAuthentication.UpdateUserProfileEmail(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id, message.Text);
-
-            //Update Identity User Email
-            _telegramAuthentication.UpdateEmail(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id, message.Text);
-            result = _telegramAuthentication.CheckUserCredential(message.From.IsBot, message.From.FirstName, message.From.LastName, message.From.Username, message.From.Id);
-            response = JsonConvert.DeserializeObject<ResponseResult>(result);
-        }
-        if (!response.IsSuccess)
-        {
-            if (response.Message.Equals(ErrorMessages.FIRST_TIME_USER_REQUEST))
-            {
-                await RequestContact(_botClient, message);
-                return;
-            }
-
-            else if (response.Message.Equals(ErrorMessages.WAITING_FOR_EMAIL_REQUEST))
-            {
-                await RequestEmailRequest(_botClient, message);
-                return;
-            }
-            await SendMessage(_botClient, message, response.Message);
-            return;
-        }
-    }
-
+    #region call back response received
     // Process Inline Keyboard callback data
     private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
@@ -282,25 +538,9 @@ public class UpdateHandler : IUpdateHandler
         {
         }
     }
-
-    private static async Task InsertTicket(ITelegramBotClient _botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        //Save this response to database
-        Task<HttpResponseMessage> responseMessage = new TicketAPI().Insert(new TicketEntity()
-        {
-            Title = callbackQuery.Data,
-            TelegramUserId = callbackQuery.From.Id.ToString()
-        });
-
-        await _botClient.AnswerCallbackQueryAsync(
-                callbackQueryId: callbackQuery.Id,
-                text: "Thank you for your ticket regarding " + callbackQuery.Data + ". A support IT engineer will contact you very soon",
-                showAlert: true
-                );
-    }
+    #endregion
 
     #region Inline Mode
-
     private async Task BotOnInlineQueryReceived(InlineQuery inlineQuery, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received inline query from: {InlineQueryFromId}", inlineQuery.From.Id);
@@ -321,7 +561,6 @@ public class UpdateHandler : IUpdateHandler
             cacheTime: 0,
             cancellationToken: cancellationToken);
     }
-
     private async Task BotOnChosenInlineResultReceived(ChosenInlineResult chosenInlineResult, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received inline result: {ChosenInlineResultId}", chosenInlineResult.ResultId);
@@ -331,248 +570,5 @@ public class UpdateHandler : IUpdateHandler
             text: $"You chose result with Id: {chosenInlineResult.ResultId}",
             cancellationToken: cancellationToken);
     }
-
     #endregion
-
-    private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
-        return Task.CompletedTask;
-    }
-
-    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-    {
-        var ErrorMessage = exception switch
-        {
-            ApiRequestException apiRequestException => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-            _ => exception.ToString()
-        };
-
-        _logger.LogInformation("HandleError: {ErrorMessage}", ErrorMessage);
-
-        // Cooldown in case of network connection error
-        if (exception is RequestException)
-            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
-    }
-
-    static async Task RequestEmailRequest(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var forceReplyMarkup = new ForceReplyMarkup() { Selective = true };
-            await _botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "please type your official/SComm email address. example: yourname@summitcommunications.net.",
-                replyMarkup: forceReplyMarkup
-            );
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
-
-    static async Task RequestContact(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var RequestReplyKeyboard = new ReplyKeyboardMarkup(new[]
-           {
-                      KeyboardButton.WithRequestContact("Contact")
-                });
-
-            await _botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "Please do not type anything in this phase, just tab contact button to share your phone number",
-                replyMarkup: RequestReplyKeyboard
-            );
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
-
-    static async Task SendMessage(ITelegramBotClient _botClient, Message message, string response)
-    {
-        try
-        {
-            await _botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: response,
-                    replyMarkup: new ReplyKeyboardRemove()
-                );
-        }
-        catch (Exception e)
-        {
-        }
-    }
-
-    private static async Task EmailSupport(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-           {
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Outlook Configure/reconfigure","Outlook Configure/reconfigure"),
-                                                     },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Mail Archive Issue","Mail Archive Issue"),
-                                                      },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Outlook Operational Problem","Outlook Operational Problem"),
-                             },
-
-                        });
-
-            await _botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "please choose your email support category",
-                replyMarkup: inlineKeyboard
-            ); ;
-        }
-        catch { }
-    }
-    private static async Task NetworkSupport(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-           {
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("LAN/WiFi Connection Problem","LAN/WiFi Connection Problem"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("No Internet/ Slow Internet","No Internet/ Slow Internet"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("AC - Access permission add/remove","AC - Access permission add/remove"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("CC Camera issue","CC Camera issue"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("VPN Access/Reset/troubleshoot","VPN Access/Reset/troubleshoot"),
-                             }
-                        });
-
-            await _botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "please choose your network support category",
-                replyMarkup: inlineKeyboard
-            ); ;
-        }
-        catch { }
-    }
-    private static async Task HardwareSupport(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-           {
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Hardware Problem/Troubleshoot","Hardware Problem/Troubleshoot"),
-                                                     },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Toner/Cartridge Request","Toner/Cartridge Request"),
-                                                      },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Damage/Broken/Lost Issue","Damage/Broken/Lost Issue"),
-                             },
-                              new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Support laptop Arrange","Support laptop Arrange"),
-                             },
-                        });
-
-            await _botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "please choose your hardware support category",
-                replyMarkup: inlineKeyboard
-            ); ;
-        }
-        catch { }
-    }
-    private static async Task Support(ITelegramBotClient _botClient, Message message)
-    {
-        try
-        {
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-           {
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("MS office install/troubleshoot","MS office install/troubleshoot"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Regular Operational software install/Troubleshoot","Regular Operational software install/Troubleshoot"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Printer/Scanner/IP install/Troubleshoot","Printer/Scanner/IP install/Troubleshoot"),
-                             },
-                            new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Any Kind of IT System Login/privilege Problem","Any Kind of IT System Login/privilege Problem"),
-                             },
-                             new []
-                             {
-                                 InlineKeyboardButton.WithCallbackData("Common Drive Connection/troubleshoot","Common Drive Connection/troubleshoot"),
-                             },
-                    });
-
-            await _botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: "please choose your support category",
-            replyMarkup: inlineKeyboard
-            );
-        }
-        catch { }
-    }
-
-    private static async Task<Message> SupportList(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.SendChatActionAsync(
-                      chatId: message.Chat.Id,
-                      chatAction: ChatAction.Typing,
-                      cancellationToken: cancellationToken);
-
-        // Simulate longer running task
-        await Task.Delay(500, cancellationToken);
-
-        InlineKeyboardMarkup inlineKeyboard = new(
-            new[]
-            {
-                    // first row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("Email", "/Email"),
-                        InlineKeyboardButton.WithCallbackData("Network", "/Network"),
-                    },
-                    // second row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("Hardware", "/Hardware"),
-                        InlineKeyboardButton.WithCallbackData("Support", "/Support"),
-                    },
-            });
-
-        return await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: "Which kinds of support are you seeking?",
-            replyMarkup: inlineKeyboard,
-            cancellationToken: cancellationToken);
-    }
 }

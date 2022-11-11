@@ -8,3 +8,45 @@ System.Exception: HttpPost failed in HttpService
    --- End of inner exception stack trace ---
    at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 69
    at Telegram.Bot.SCL.Auth.TicketAPI.Insert(TicketEntity ticketEntity) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\Telegram.Bot.SCL.Auth\Ticket.cs:line 38
+System.Exception: HttpPost failed in HttpService
+ ---> System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:44373)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 63
+   --- End of inner exception stack trace ---
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 69
+   at Telegram.Bot.SCL.Auth.TicketAPI.Insert(TicketEntity ticketEntity) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Ticket.cs:line 38
+System.Exception: HttpPost failed in HttpService
+ ---> System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:44373)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 63
+   --- End of inner exception stack trace ---
+   at Telegram.Bot.SCL.Auth.Services.HttpService.PostWebApi(Object data, String apiUrl) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Services\HttpService.cs:line 69
+   at Telegram.Bot.SCL.Auth.TicketAPI.Insert(TicketEntity ticketEntity) in G:\Project Source\ITBOT\Telegram.Bot.Examples-master\telegram_bot_it_support\Telegram.Bot.SCL.Auth\Ticket.cs:line 38
