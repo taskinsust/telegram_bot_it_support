@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj": {}
+    "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj": {}
   },
   "projects": {
-    "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj": {
+    "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj",
+        "projectUniqueName": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj",
         "projectName": "Telegram.Bot.SCL.Auth",
-        "projectPath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj",
-        "packagesPath": "C:\\Users\\taskin.khaleque\\.nuget\\packages\\",
-        "outputPath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\obj\\",
+        "projectPath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj",
+        "packagesPath": "C:\\Users\\sakib.shadman\\.nuget\\packages\\",
+        "outputPath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\taskin.khaleque\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sakib.shadman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -84,24 +85,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj": {
+    "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj",
+        "projectUniqueName": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj",
         "projectName": "Telegram.Bot.SCL.Polling",
-        "projectPath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj",
-        "packagesPath": "C:\\Users\\taskin.khaleque\\.nuget\\packages\\",
-        "outputPath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\obj\\",
+        "projectPath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\Telegram.Bot.SCL.Polling.csproj",
+        "packagesPath": "C:\\Users\\sakib.shadman\\.nuget\\packages\\",
+        "outputPath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Polling\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\taskin.khaleque\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sakib.shadman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -115,8 +117,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj": {
-                "projectPath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj"
+              "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj": {
+                "projectPath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.Auth\\Telegram.Bot.SCL.Auth.csproj"
               }
             }
           }
@@ -160,7 +162,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

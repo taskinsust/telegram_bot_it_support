@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "T6Vd84M29xzNeB0BOGeNN5B5b9uOsCzrsuaCXWfR4DjMszMB7T4tcBicJWuat1uIa7+Mnzc2NrG3GiRzZusnsw==",
+  "dgSpecHash": "IrQMLssSL4aheUzURWf3I68VJY9FUV/fovLsEZQ5y4vsOf82dg3qc+g1VTbfTgFjZ9/I4sK9HAzhdEVisioyrw==",
   "success": true,
-  "projectFilePath": "G:\\Project Source\\ITBOT\\Telegram.Bot.Examples-master\\telegram_bot_it_support\\Telegram.Bot.SCL.InlineQueries\\Telegram.Bot.SCL.InlineQueries.csproj",
+  "projectFilePath": "D:\\Sakib\\DotNet\\telegram_bot_it_support\\Telegram.Bot.SCL.InlineQueries\\Telegram.Bot.SCL.InlineQueries.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\taskin.khaleque\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
-    "C:\\Users\\taskin.khaleque\\.nuget\\packages\\telegram.bot\\18.0.0\\telegram.bot.18.0.0.nupkg.sha512"
+    "C:\\Users\\sakib.shadman\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
+    "C:\\Users\\sakib.shadman\\.nuget\\packages\\telegram.bot\\18.0.0\\telegram.bot.18.0.0.nupkg.sha512"
   ],
   "logs": []
 }

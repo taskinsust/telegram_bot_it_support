@@ -349,33 +349,46 @@ public class UpdateHandler : IUpdateHandler
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
-        if (message.Text is not { } messageText)
-            return;
 
-        var res = await UserRegPlusCredentialCheck(_botClient, message);
-        if (res == "not_pull")
-            return;
-        var action = messageText.Split(' ')[0] switch
+        if (message.Text == null && message.Type != MessageType.Text)
         {
-            //"/inline_keyboard" => SendInlineKeyboard(_botClient, message, cancellationToken),
-            //"/keyboard" => SendReplyKeyboard(_botClient, message, cancellationToken),
-            //"/remove" => RemoveKeyboard(_botClient, message, cancellationToken),
-            //"/photo" => SendFile(_botClient, message, cancellationToken),
-            //"/request" => RequestContactAndLocation(_botClient, message, cancellationToken),
-            //"/inline_mode" => StartInlineQuery(_botClient, message, cancellationToken),
-            //"/throw" => FailingHandler(_botClient, message, cancellationToken),
-            //_ => Usage(_botClient, message, cancellationToken)
+            var response = await UserRegPlusCredentialCheck(_botClient, message);
+            if (response == "not_pull")
+                return;
+        }
+        else
+        {
+            if (message.Text is not { } messageText)
+                return;
 
-            "/Menu" => SupportList(_botClient, message, cancellationToken),
-            "/Email" => EmailSupport(_botClient, message),
-            "/Network" => NetworkSupport(_botClient, message),
-            "/Hardware" => HardwareSupport(_botClient, message),
-            "/Support" => Support(_botClient, message),
-            "/RequestEmail" => RequestEmailRequest(_botClient, message),
-            "/RequestContact" => RequestContact(_botClient, message),
-            "/throw" => FailingHandler(_botClient, message, cancellationToken),
-            _ => Usage(_botClient, message, cancellationToken)
-        };
+            var res = await UserRegPlusCredentialCheck(_botClient, message);
+            if (res == "not_pull")
+                return;
+            var action = messageText.Split(' ')[0] switch
+            {
+                //"/inline_keyboard" => SendInlineKeyboard(_botClient, message, cancellationToken),
+                //"/keyboard" => SendReplyKeyboard(_botClient, message, cancellationToken),
+                //"/remove" => RemoveKeyboard(_botClient, message, cancellationToken),
+                //"/photo" => SendFile(_botClient, message, cancellationToken),
+                //"/request" => RequestContactAndLocation(_botClient, message, cancellationToken),
+                //"/inline_mode" => StartInlineQuery(_botClient, message, cancellationToken),
+                //"/throw" => FailingHandler(_botClient, message, cancellationToken),
+                //_ => Usage(_botClient, message, cancellationToken)
+
+                "/Menu" => SupportList(_botClient, message, cancellationToken),
+                "/Email" => EmailSupport(_botClient, message),
+                "/Network" => NetworkSupport(_botClient, message),
+                "/Hardware" => HardwareSupport(_botClient, message),
+                "/Support" => Support(_botClient, message),
+                "/RequestEmail" => RequestEmailRequest(_botClient, message),
+                "/RequestContact" => RequestContact(_botClient, message),
+                "/throw" => FailingHandler(_botClient, message, cancellationToken),
+                _ => Usage(_botClient, message, cancellationToken)
+            };
+        }
+
+
+
         //Message sentMessage = await action;
         //_logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
 
